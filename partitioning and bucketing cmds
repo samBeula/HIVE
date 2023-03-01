@@ -1,0 +1,233 @@
+[training@localhost ~]$ hive
+Logging initialized using configuration in file:/etc/hive/conf.dist/hive-log4j.properties
+Hive history file=/tmp/training/hive_job_log_training_202302151124_1976048965.txt
+hive> create table movies_part (movieId int,movieName string,releaseDate string,imdbUrl string)
+    > partitioned by (genre string)
+    > row format delimited
+    > fields terminated by ','
+    > ;
+OK
+Time taken: 2.474 seconds
+hive> 
+    > 
+    > describe movies_part
+    > ;
+OK
+movieid	int	
+moviename	string	
+releasedate	string	
+imdburl	string	
+genre	string	
+Time taken: 0.195 seconds
+hive> 
+    > load data local inpath 'hiveWorkspace/action.txt' into table
+    > movies_part partition(genre='action');
+Copying data from file:/home/training/hiveWorkspace/action.txt
+Copying file: file:/home/training/hiveWorkspace/action.txt
+Loading data to table default.movies_part partition (genre=action)
+OK
+Time taken: 0.606 seconds
+hive> 
+    > load data local inpath 'hiveWorkspace/action.txt' into table
+    > ;
+FAILED: ParseException line 1:55 mismatched input '<EOF>' expecting Identifier near 'table' in table name
+
+hive> load data local inpath 'hiveWorkspace/thriller.txt' into table
+    > movies_part partition(genre='thriller');                      
+Copying data from file:/home/training/hiveWorkspace/thriller.txt
+Copying file: file:/home/training/hiveWorkspace/thriller.txt
+Loading data to table default.movies_part partition (genre=thriller)
+OK
+Time taken: 0.36 seconds
+hive> 
+    > 
+    > load data local inpath 'hiveWorkspace/comedy.txt' into table  
+    > movies_part partition(genre='comedy');                      
+Copying data from file:/home/training/hiveWorkspace/comedy.txt
+Copying file: file:/home/training/hiveWorkspace/comedy.txt
+Loading data to table default.movies_part partition (genre=comedy)
+OK
+Time taken: 0.34 seconds
+hive> 
+    > 
+    > select * from movies_part where genre='comedy' limit 3;
+OK
+1	Toy Story (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Toy%20Story%20(1995)	comedy
+4	Get Shorty (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Get%20Shorty%20(1995)	comedy
+8	Babe (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Babe%20(1995)	comedy
+Time taken: 0.39 seconds
+hive>                                                        
+    > 
+    > select * from movies_part where genre='action' limit 3;
+OK
+2	GoldenEye (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?GoldenEye%20(1995)	action
+4	Get Shorty (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Get%20Shorty%20(1995)	action
+17	From Dusk Till Dawn (1996)	05-Feb-1996	http://us.imdb.com/M/title-exact?From%20Dusk%20Till%20Dawn%20(1996)	action
+Time taken: 0.141 seconds
+hive> 
+    > 
+    > select * from movies_part where genre='thriller' limit 3;
+OK
+2	GoldenEye (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?GoldenEye%20(1995)	thriller
+3	Four Rooms (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Four%20Rooms%20(1995)	thriller
+5	Copycat (1995)	01-Jan-1995	http://us.imdb.com/M/title-exact?Copycat%20(1995)	thriller
+Time taken: 0.118 seconds
+hive> 
+    > 
+    > select * from userRatings limit 3;
+OK
+196	242	3	881250949
+186	302	3	891717742
+22	377	1	878887116
+Time taken: 0.504 seconds
+hive> select * from users limit 3;      
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'users'
+hive> 
+    > 
+    > create table users (userId int,age int,gender string,occupation string,zipCode bigint)   
+    > row format delimited
+    > fields terminated by '|'
+    > stored as textfile;
+OK
+Time taken: 0.046 seconds
+hive> 
+    > load data local inpath   
+    > '/home/training/hiveWorkspace/ml-data/u.user'
+    > into table users;
+Copying data from file:/home/training/hiveWorkspace/ml-data/u.user
+Copying file: file:/home/training/hiveWorkspace/ml-data/u.user
+Loading data to table default.users
+OK
+Time taken: 0.222 seconds
+hive> 
+    > 
+    > select * from users limit 3;                                                          
+OK
+1	24	M	technician	85711
+2	53	F	other	94043
+3	23	M	writer	32067
+Time taken: 0.113 seconds
+hive> 
+    > 
+    > show tables;
+OK
+genre
+movies_part
+userratings
+users
+Time taken: 0.052 seconds
+hive> select count(*) from userratings;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202302151103_0001, Tracking URL = http://0.0.0.0:50030/jobdetails.jsp?jobid=job_202302151103_0001
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=0.0.0.0:8021 -kill job_202302151103_0001
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-02-15 13:33:36,075 Stage-1 map = 0%,  reduce = 0%
+2023-02-15 13:33:39,118 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.88 sec
+2023-02-15 13:33:40,127 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.88 sec
+2023-02-15 13:33:41,133 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.09 sec
+2023-02-15 13:33:42,139 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.09 sec
+2023-02-15 13:33:43,170 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.09 sec
+MapReduce Total cumulative CPU time: 2 seconds 90 msec
+Ended Job = job_202302151103_0001
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 2.09 sec   HDFS Read: 0 HDFS Write: 0 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 90 msec
+OK
+100000
+Time taken: 11.082 seconds
+hive> 
+    > 
+    > create table ratingBuckets (userId int,movieId int,rating int,unixTime bigint)
+    > clustered by (movieId) into 8 buckets;                                        
+OK
+Time taken: 0.055 seconds
+hive> 
+    > 
+    >            
+    > set hive.enforce.bucketing=true;
+hive> 
+    > insert overwrite table ratingBuckets select * from userratings cluster by movieId;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 8
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202302151103_0002, Tracking URL = http://0.0.0.0:50030/jobdetails.jsp?jobid=job_202302151103_0002
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=0.0.0.0:8021 -kill job_202302151103_0002
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 8
+2023-02-15 13:49:12,735 Stage-1 map = 0%,  reduce = 0%
+2023-02-15 13:49:14,748 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.73 sec
+2023-02-15 13:49:15,752 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.73 sec
+2023-02-15 13:49:16,757 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.73 sec
+2023-02-15 13:49:17,762 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.73 sec
+2023-02-15 13:49:18,775 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.73 sec
+2023-02-15 13:49:19,785 Stage-1 map = 100%,  reduce = 25%, Cumulative CPU 5.59 sec
+2023-02-15 13:49:20,792 Stage-1 map = 100%,  reduce = 25%, Cumulative CPU 5.59 sec
+2023-02-15 13:49:21,801 Stage-1 map = 100%,  reduce = 25%, Cumulative CPU 5.59 sec
+2023-02-15 13:49:22,807 Stage-1 map = 100%,  reduce = 25%, Cumulative CPU 5.59 sec
+2023-02-15 13:49:23,812 Stage-1 map = 100%,  reduce = 25%, Cumulative CPU 5.59 sec
+2023-02-15 13:49:24,817 Stage-1 map = 100%,  reduce = 50%, Cumulative CPU 9.31 sec
+2023-02-15 13:49:25,823 Stage-1 map = 100%,  reduce = 50%, Cumulative CPU 9.31 sec
+2023-02-15 13:49:26,829 Stage-1 map = 100%,  reduce = 50%, Cumulative CPU 9.31 sec
+2023-02-15 13:49:27,836 Stage-1 map = 100%,  reduce = 50%, Cumulative CPU 9.31 sec
+2023-02-15 13:49:28,847 Stage-1 map = 100%,  reduce = 75%, Cumulative CPU 13.11 sec
+2023-02-15 13:49:29,856 Stage-1 map = 100%,  reduce = 75%, Cumulative CPU 13.11 sec
+2023-02-15 13:49:30,870 Stage-1 map = 100%,  reduce = 75%, Cumulative CPU 13.11 sec
+2023-02-15 13:49:31,878 Stage-1 map = 100%,  reduce = 75%, Cumulative CPU 13.11 sec
+2023-02-15 13:49:32,885 Stage-1 map = 100%,  reduce = 75%, Cumulative CPU 13.11 sec
+2023-02-15 13:49:33,895 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 16.92 sec
+2023-02-15 13:49:34,903 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 16.92 sec
+MapReduce Total cumulative CPU time: 16 seconds 920 msec
+Ended Job = job_202302151103_0002
+Loading data to table default.ratingbuckets
+rmr: DEPRECATED: Please use 'rm -r' instead.
+Deleted /user/hive/warehouse/ratingbuckets
+100000 Rows loaded to ratingbuckets
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 8   Cumulative CPU: 16.92 sec   HDFS Read: 0 HDFS Write: 0 SUCCESS
+Total MapReduce CPU Time Spent: 16 seconds 920 msec
+OK
+Time taken: 25.863 seconds
+hive> 
+    > 
+    > describe movies_part;
+OK
+movieid	int	
+moviename	string	
+releasedate	string	
+imdburl	string	
+genre	string	
+Time taken: 0.054 seconds
+hive> select movieid,lower(moviename) from movies_part where genre='comedy' limit 3;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202302151103_0003, Tracking URL = http://0.0.0.0:50030/jobdetails.jsp?jobid=job_202302151103_0003
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=0.0.0.0:8021 -kill job_202302151103_0003
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2023-02-15 14:07:56,772 Stage-1 map = 0%,  reduce = 0%
+2023-02-15 14:07:59,804 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.67 sec
+2023-02-15 14:08:00,814 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 0.67 sec
+MapReduce Total cumulative CPU time: 670 msec
+Ended Job = job_202302151103_0003
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 0.67 sec   HDFS Read: 0 HDFS Write: 0 SUCCESS
+Total MapReduce CPU Time Spent: 670 msec
+OK
+1	toy story (1995)
+4	get shorty (1995)
+8	babe (1995)
+Time taken: 6.494 seconds
+hive> 
