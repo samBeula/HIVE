@@ -1,0 +1,56 @@
+[training@localhost ~]$ hive
+Logging initialized using configuration in file:/etc/hive/conf.dist/hive-log4j.properties
+Hive history file=/tmp/training/hive_job_log_training_202302141407_1939751093.txt
+hive> create external table genres(genre string,id int)
+    > row format delimited
+    > fields terminated by '|'
+    > stored as textfile 
+    > location 'hiveWorks/u.genre';
+FAILED: Error in metadata: java.lang.IllegalArgumentException: java.net.URISyntaxException: Relative path in absolute URI: hdfs://0.0.0.0:8020hiveWorks/u.genre
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask
+hive> create external table genre(genre string,id int) 
+    > row format delimited                            
+    > stored as textfile                              
+    > location 'hiveWorks/u.genre';                   
+FAILED: Error in metadata: java.lang.IllegalArgumentException: java.net.URISyntaxException: Relative path in absolute URI: hdfs://0.0.0.0:8020hiveWorks/u.genre
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask
+hive> create external table genre(genre string,id int)
+    > row format delimited                            
+    > fields terminated by '|'                        
+    > stored as textfile                              
+    > location 'hiveWorks/u.genre';                   
+FAILED: Error in metadata: java.lang.IllegalArgumentException: java.net.URISyntaxException: Relative path in absolute URI: hdfs://0.0.0.0:8020hiveWorks/u.genre
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask
+hive> create external table genre(genre string,id int)
+    > row format delimited                            
+    > fields terminated by '|'                        
+    > stored as textfile                              
+    > location '/hiveWorks/u.genre';                  
+OK
+Time taken: 0.302 seconds
+hive> 
+    > create external table genre1(genre string,id int)
+    > row format delimited                             
+    > fields terminated by '|'                         
+    > stored as textfile                               
+    > location '/hiveWorks';                           
+OK
+Time taken: 0.142 seconds
+hive> 
+    > describe genre;
+OK
+genre	string	
+id	int	
+Time taken: 0.15 seconds
+hive> drop table genre1;
+OK
+Time taken: 0.389 seconds
+hive> commit;
+FAILED: ParseException line 1:0 cannot recognize input near 'commit' '<EOF>' '<EOF>'
+
+hive> drop table users;
+OK
+Time taken: 0.19 seconds
+hive> select * from users; 
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'users'
+hive>                                                                                       
